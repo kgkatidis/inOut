@@ -47,7 +47,7 @@
        <div class="row">
           <div class="col-md-6 text-center" id="left">
              <div class="card">
-				 
+				 <?php readJson() ?>
 				 <script>
 						var container = document.getElementById("left");
 					 	for (let i = 1; i < 49; i++) {
