@@ -40,136 +40,24 @@
       <p class="lead">Responsibility saves lives !!</p>
       <hr class="my-4">
       <p>Do not forget to click to your name before you go out and after your arrival to Compound.</p>
+			<p>GREEN --&gt; YOU ARE INSIDE</p>
+			<p>BLUE --&gt; YOU ARE WORK</p>
+			<p>RED --&gt; YOU ARE OUTSIDE</p>
      
     </div>
     <div class="container">
       
        <div class="row">
-          <div class="col-md-6 text-center" id="left">
+          <div class="col-md-4 text-center" id="left">
              <div class="card">
-				 <?php readJson() ?>
-				 <script>
-						var container = document.getElementById("left");
-					 	for (let i = 1; i < 49; i++) {
-							
-							const idThis=i;
-							
-							const dDiv = document.createElement('div');
-							dDiv.id=idThis;
-							dDiv.class="card-body";
-							dDiv.style="background: yellow";
-							
-							
-							const hH3 = document.createElement('h3');
-							hH3.innerHTML='No'+idThis;
-							
-							const p1 = document.createElement('p');
-							p1.innerHTML="GREEN --&gt; YOU ARE INSIDE";
-							
-							const p2 = document.createElement('p');
-							p2.innerHTML="RED --&gt; YOU ARE OUTSIDE";
-							
-							const b = document.createElement('button');
-							
-							
-							b.innerHTML="Change Situation";
-							b.class="btn btn-info btn-md";
-							b.onclick=function(){
-								
-								b.action="";
-								b.method="POST";
-								
-								if(document.getElementById(idThis).style.background == "green"){
-								
-									document.getElementById(idThis).style.background = "red";
-								}
-								else {
-									document.getElementById(idThis).style.background = "green";
-								}
-								b.type="submit";							
-								};
-							
-							var bl = document.createElement('hr');
-							bl.style.border='solid';
-							bl.style.color='rgba(0,0,0,0.5)';
-							
-							dDiv.appendChild(hH3);
-							dDiv.appendChild(p1);
-							dDiv.appendChild(p2);
-							dDiv.appendChild(b);
-							dDiv.appendChild(bl);
-							
-							container.appendChild(dDiv);
-							
-						}
-						
-					</script>
-				 
-                  
-				
-					<script>
-					  function changeSituation(idx){
-						  
-					  }
-				  </script>
-				</div>
-				 
+						 </div>
+					</div>
+					<div class="text-center col-md-4" id="middle">
+             <div class="card">
              </div>
-          
-          <div class="text-center col-md-6" id="right">
+          </div>
+          <div class="text-center col-md-4" id="right">
              <div class="card">
-                <script>
-				 var container2 = document.getElementById("right");
-					 	for (let j = 49; j < 96; j++) {
-							
-							const idThis2=j;
-							
-							const dDiv2 = document.createElement('div');
-							dDiv2.id=idThis2;
-							dDiv2.class="card-body";
-							dDiv2.style="background: yellow";
-							
-							const hH3 = document.createElement('h3');
-							hH3.innerHTML='No'+idThis2;
-							
-							const p3 = document.createElement('p');
-							p3.innerHTML="GREEN --&gt; YOU ARE INSIDE";
-							
-							const p4 = document.createElement('p');
-							p4.innerHTML="RED --&gt; YOU ARE OUTSIDE";
-							
-							const b = document.createElement('button');
-							
-							
-							b.innerHTML="Change Situation";
-							b.class="btn btn-info btn-md";
-							b.onclick=function(){
-								if(document.getElementById(idThis2).style.background == "green"){
-									document.getElementById(idThis2).style.background = "red";
-								}
-								else {
-									document.getElementById(idThis2).style.background = "green";
-								}
-								
-								};
-							
-							
-							var bl = document.createElement('hr');
-							bl.style.border='solid';
-							bl.style.color='rgba(0,0,0,0.5)';
-							
-							dDiv2.appendChild(hH3);
-							dDiv2.appendChild(p3);
-							dDiv2.appendChild(p4);
-							dDiv2.appendChild(b);
-							dDiv2.appendChild(bl);
-							
-							container2.appendChild(dDiv2);
-							
-						}
-						
-					</script>
-				 </script>
              </div>
           </div>
        </div>
@@ -192,4 +80,102 @@
     <script src="js/popper.min.js"></script>
   <script src="js/bootstrap-4.3.1.js"></script>
   </body>
+	<script>
+					 	var items = <?php readJson() ?>;
+						console.log(JSON.stringify(items));
+						console.log(items);
+						var containerLeft = document.getElementById("left");
+						var containerMiddle = document.getElementById("middle");
+						var containerRight = document.getElementById("right");
+						var lastAppend = "right";
+						items.forEach((item) => {			
+							const dDiv = document.createElement('div');
+							dDiv.id=item.id;
+							dDiv.class="card-body";
+							dDiv.style="background: yellow";
+							
+							const p1 = document.createElement('p');
+
+							if(item.status === "out"){
+								dDiv.style="background: red";
+								p1.innerHTML=`YOU ARE OUTSIDE <br> Last update: ${item.lastChange}`;
+							}
+							else if (item.status === "in") {
+								dDiv.style="background: green";
+								p1.innerHTML=`YOU ARE INSIDE <br> Last update: ${item.lastChange}`;
+							}
+							else if (item.status === "work") {
+								dDiv.style="background: blue";
+								p1.innerHTML=`YOU ARE WORK <br> Last update: ${item.lastChange}`;
+							} else {
+								dDiv.style="background: yellow";
+								p1.innerHTML="Not identified.";
+							}
+							const hH3 = document.createElement('h3');
+							hH3.innerHTML=item.id;
+							
+							const b = document.createElement('button');
+							b.innerHTML="Change Situation";
+							b.class="btn btn-info btn-md";
+							b.type="submit";
+							b.onclick=function(){
+								const statuses = ["out", "in", "work"];
+								const currentIndex = statuses.indexOf(item.status);
+								const nextIndex = (currentIndex + 1) % statuses.length;
+								item.status = statuses[nextIndex];
+								item.lastChange = (new Date()).toLocaleString();
+								if(item.status === "out"){
+									document.getElementById(item.id).style.background = "red";
+									document.getElementById(item.id).getElementsByTagName('p')[0].innerHTML =`YOU ARE OUTSIDE <br> Last update: ${item.lastChange}`;
+								}
+								else if (item.status === "in") {
+									document.getElementById(item.id).style.background = "green";
+									document.getElementById(item.id).getElementsByTagName('p')[0].innerHTML =`YOU ARE INSIDE <br> Last update: ${item.lastChange}`;
+								}
+								else if (item.status === "work") {
+									document.getElementById(item.id).style.background = "blue";
+									document.getElementById(item.id).getElementsByTagName('p')[0].innerHTML =`YOU ARE WORK <br> Last update: ${item.lastChange}`;
+								}	
+								sendData(items);
+							};
+							
+							var bl = document.createElement('hr');
+							bl.style.border='solid';
+							bl.style.color='rgba(0,0,0,0.5)';
+							
+							dDiv.appendChild(hH3);
+							dDiv.appendChild(p1);
+							dDiv.appendChild(b);
+							dDiv.appendChild(bl);
+							
+							if (lastAppend === "right"){
+								containerLeft.appendChild(dDiv);
+								lastAppend = "left";
+							} else if (lastAppend === "left") {
+								containerMiddle.appendChild(dDiv);
+								lastAppend = "middle";
+							}	else if (lastAppend === "middle") {
+								containerRight.appendChild(dDiv);
+								lastAppend = "right";
+							}
+								
+							
+						});
+						function sendData(items){
+							var xhr = new XMLHttpRequest();
+							xhr.open('POST', 'script.php', true);
+							xhr.onload = function () {
+								if(xhr.status !== 200){
+									// Server does not return HTTP 200 (OK) response.
+									// Whatever you wanted to do when server responded with another code than 200 (OK)
+									return; // return is important because the code below is NOT executed if the response is other than HTTP 200 (OK)
+								}
+								// Whatever you wanted to do when server responded with HTTP 200 (OK)
+								// I've added a DIV with id of testdiv to show the result there
+								console.log(this.responseText);
+							};
+							var data = {items: 'fdfasd'};
+							xhr.send(JSON.stringify(items));
+						}
+					</script>
 </html>
