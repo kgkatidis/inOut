@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap - Prebuilt Layout</title>
+    <title>Eldysalna</title>
 
     <!-- Bootstrap -->
     <link href="css/bootstrap-4.3.1.css" rel="stylesheet">
@@ -23,16 +23,11 @@
                 <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
              </li>
              <li class="nav-item">
-                <a class="nav-link" href="#">Contact</a>
+                <a class="nav-link" href="contactUs.html">Contact</a>
              </li>
              
-            
           </ul>
-          <form class="form-inline my-2 my-lg-0">
-             <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-          </form>
-       </div>
+</div>
     </nav>
 
     <div class="jumbotron jumbotron-fluid text-center">
@@ -40,10 +35,22 @@
       <p class="lead">Responsibility saves lives !!</p>
       <hr class="my-4">
       <p>Do not forget to click to your name before you go out and after your arrival to Compound.</p>
-			<p>GREEN --&gt; YOU ARE INSIDE</p>
-			<p>BLUE --&gt; YOU ARE WORK</p>
-			<p>RED --&gt; YOU ARE OUTSIDE</p>
-     
+			<p>GREEN --&gt; YOU ARE INSIDE. Total:<strong id="inside"></strong></p>
+			<p>BLUE --&gt; YOU ARE AT WORK. Total:<strong id="atWork"></strong></p>
+			<p>RED --&gt; YOU ARE OUTSIDE. Total:<strong id="outside"></strong></p>
+   <script>
+	   function measure(items){
+		   		console.log(77);
+		   document.getElementById('inside').innerHTML= (items.filter(item => item.status=='in')).length;
+		   document.getElementById('atWork').innerHTML= (items.filter(item => item.status=='work')).length;
+  		   document.getElementById('outside').innerHTML= (items.filter(item => item.status=='out')).length
+
+	   }
+	   
+	   </script>
+	   
+		
+		
     </div>
     <div class="container">
       
@@ -99,14 +106,17 @@
 							if(item.status === "out"){
 								dDiv.style="background: red";
 								p1.innerHTML=`YOU ARE OUTSIDE <br> Last update: ${item.lastChange}`;
+							
 							}
 							else if (item.status === "in") {
 								dDiv.style="background: green";
 								p1.innerHTML=`YOU ARE INSIDE <br> Last update: ${item.lastChange}`;
+							
 							}
 							else if (item.status === "work") {
 								dDiv.style="background: blue";
-								p1.innerHTML=`YOU ARE WORK <br> Last update: ${item.lastChange}`;
+								p1.innerHTML=`YOU ARE AT WORK <br> Last update: ${item.lastChange}`;
+							
 							} else {
 								dDiv.style="background: yellow";
 								p1.innerHTML="Not identified.";
@@ -115,10 +125,11 @@
 							hH3.innerHTML=item.id;
 							
 							const b = document.createElement('button');
-							b.innerHTML="Change Situation";
+							b.innerHTML="Change State";
 							b.class="btn btn-info btn-md";
 							b.type="submit";
 							b.onclick=function(){
+
 								const statuses = ["out", "in", "work"];
 								const currentIndex = statuses.indexOf(item.status);
 								const nextIndex = (currentIndex + 1) % statuses.length;
@@ -134,9 +145,11 @@
 								}
 								else if (item.status === "work") {
 									document.getElementById(item.id).style.background = "blue";
-									document.getElementById(item.id).getElementsByTagName('p')[0].innerHTML =`YOU ARE WORK <br> Last update: ${item.lastChange}`;
+									document.getElementById(item.id).getElementsByTagName('p')[0].innerHTML =`YOU ARE AT WORK <br> Last update: ${item.lastChange}`;
 								}	
 								sendData(items);
+								measure(items);
+								
 							};
 							
 							var bl = document.createElement('hr');
@@ -147,20 +160,23 @@
 							dDiv.appendChild(p1);
 							dDiv.appendChild(b);
 							dDiv.appendChild(bl);
-							
-							if (lastAppend === "right"){
+							const tempindex = items.indexOf(item);
+							if (tempindex<=Math.round((items.length/3)+1))
+							{
+								
 								containerLeft.appendChild(dDiv);
 								lastAppend = "left";
-							} else if (lastAppend === "left") {
+							} else if (tempindex<=Math.round((items.length/3)+1)*2) {
 								containerMiddle.appendChild(dDiv);
 								lastAppend = "middle";
-							}	else if (lastAppend === "middle") {
+							}	else if (tempindex<=items.length) {
 								containerRight.appendChild(dDiv);
 								lastAppend = "right";
 							}
 								
 							
 						});
+		measure(items);
 						function sendData(items){
 							var xhr = new XMLHttpRequest();
 							xhr.open('POST', 'script.php', true);
@@ -176,6 +192,8 @@
 							};
 							var data = {items: 'fdfasd'};
 							xhr.send(JSON.stringify(items));
+							
 						}
+
 					</script>
 </html>
